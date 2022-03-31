@@ -4,6 +4,7 @@ var io = require('socket.io')(http, {
   allowEIO3: true,
   cors: {
     origin: "http://120.55.55.33:9528",
+    // origin: "http://localhost:9528",
     methods: ["GET", "POST"],
     credentials: true
   }
@@ -39,9 +40,18 @@ io.on('connection', function (socket) {
   /* 监听群聊事件 */
   socket.on('groupChat', data => {
     // 发送给所有客户端，除了发送者
-    data.list.type = 'user';
+    data.type = 'user';
     socket.broadcast.emit('updateChatMessageList', data);
   });
+  socket.on('privateChat',data=>{
+    /* 找到对应的私聊对象 */
+    io.sockets.sockets.forEach(iss=>{
+        if(iss.name==data.receiver){
+            data.type='user';
+            io.to(iss.id).emit('updateChatMessageList',data);
+        }
+    });
+});
   /* 用户掉线 */
   socket.on('disconnect', () => {
     console.log('用户离开')
