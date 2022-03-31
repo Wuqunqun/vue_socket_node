@@ -3,7 +3,7 @@ var http = require('http').Server(app);
 var io = require('socket.io')(http, {
   allowEIO3: true,
   cors: {
-    origin: "http://localhost:9528",
+    origin: "http://120.55.55.33:9528",
     methods: ["GET", "POST"],
     credentials: true
   }
